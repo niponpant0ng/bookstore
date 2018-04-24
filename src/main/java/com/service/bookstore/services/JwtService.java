@@ -2,6 +2,7 @@ package com.service.bookstore.services;
 
 import com.service.bookstore.models.User;
 import com.service.bookstore.models.UserClaim;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +16,7 @@ import java.security.Key;
  * Created by nipon on 4/24/18.
  */
 @Service
-public class UserJwtService {
+public class JwtService {
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @Value("${jwt.secret_key}")
@@ -24,7 +25,7 @@ public class UserJwtService {
     @Value("${jwt.expire_in_ms}")
     private int jwtExpireInMs;
 
-    public String createUserJwt(User user) {
+    public String createToken(User user) {
         UserClaim claim = new UserClaim(jwtExpireInMs);
 
         byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(jwtSecret);

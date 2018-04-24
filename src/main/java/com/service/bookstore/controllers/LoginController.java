@@ -1,6 +1,6 @@
 package com.service.bookstore.controllers;
 
-import com.service.bookstore.exceptions.CredentialWrongException;
+import com.service.bookstore.exceptions.CredentialException;
 import com.service.bookstore.exceptions.ServerInternalErrorException;
 import com.service.bookstore.models.User;
 import com.service.bookstore.services.UserService;
@@ -29,7 +29,7 @@ public class LoginController {
             jwt.put("token", userService.login(user));
 
             return jwt;
-        } catch (CredentialWrongException creEx) {
+        } catch (CredentialException creEx) {
             throw creEx;
         } catch (Exception e) {
             throw new ServerInternalErrorException();

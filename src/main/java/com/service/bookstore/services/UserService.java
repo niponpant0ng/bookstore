@@ -1,6 +1,6 @@
 package com.service.bookstore.services;
 
-import com.service.bookstore.exceptions.CredentialWrongException;
+import com.service.bookstore.exceptions.CredentialException;
 import com.service.bookstore.models.User;
 import com.service.bookstore.reposistories.UserReposistory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,13 +12,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserService {
     private UserReposistory userReposistory;
-
-    private UserJwtService userJwtService;
+    private JwtService jwtService;
 
     @Autowired
-    public UserService(UserReposistory userReposistory, UserJwtService userJwtService) {
+    public UserService(UserReposistory userReposistory, JwtService jwtService) {
         this.userReposistory = userReposistory;
-        this.userJwtService = userJwtService;
+        this.jwtService = jwtService;
     }
 
     public User create(User user) {
@@ -28,9 +27,9 @@ public class UserService {
     public String login(User loginUser) {
         User user = userReposistory.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
         if(user == null) {
-            throw new CredentialWrongException();
+            throw new CredentialException();
         } else {
-            return userJwtService.createUserJwt(user);
+            return jwtService.createToken(user);
         }
     }
 }
