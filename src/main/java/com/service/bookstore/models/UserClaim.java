@@ -8,16 +8,14 @@ import java.util.*;
  * Created by nipon on 10/29/16.
  */
 public class UserClaim {
-    private final int EXPIRE_TOKEN_TIME = 1;
-
     private String jti;
     private String iss = "book store";
     private Date exp;
 
-    public UserClaim() {
+    public UserClaim(int expireInMs) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.set(Calendar.HOUR, EXPIRE_TOKEN_TIME);
+        calendar.set(Calendar.MILLISECOND, expireInMs);
 
         jti = UUID.randomUUID().toString();
         exp = calendar.getTime();
