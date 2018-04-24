@@ -4,11 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Created by nipon on 4/23/18.
+ * Created by nipon on 4/24/18.
  */
 @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
-public class ManageErrorException extends RuntimeException {
-    public ManageErrorException(String modelName) {
-        super(String.format("Create or Update %s error", modelName));
+public class CredentialWrongException extends RuntimeException {
+    public CredentialWrongException() {
+        super("Your credential was wrong");
     }
 }
