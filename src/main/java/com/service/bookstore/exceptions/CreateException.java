@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Created by nipon on 4/23/18.
  */
 @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
-public class ManageErrorException extends RuntimeException {
-    public ManageErrorException(String modelName) {
-        super(String.format("Create or Update %s error", modelName));
+public class CreateException extends RuntimeException {
+    public CreateException(String modelName) {
+        super(String.format("Create %s error", modelName));
     }
 }

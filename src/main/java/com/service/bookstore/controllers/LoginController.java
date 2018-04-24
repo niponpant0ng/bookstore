@@ -1,6 +1,7 @@
 package com.service.bookstore.controllers;
 
 import com.service.bookstore.exceptions.CredentialWrongException;
+import com.service.bookstore.exceptions.ServerInternalErrorException;
 import com.service.bookstore.models.User;
 import com.service.bookstore.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +24,15 @@ public class LoginController {
 
     @PostMapping
     public Map<String, String> login(@RequestBody User user) {
-        Map<String, String> jwt = new HashMap<>();
-        jwt.put("token", userService.login(user));
+        try {
+            Map<String, String> jwt = new HashMap<>();
+            jwt.put("token", userService.login(user));
 
-        return jwt;
+            return jwt;
+        } catch (CredentialWrongException creEx) {
+            throw creEx;
+        } catch (Exception e) {
+            throw new ServerInternalErrorException();
+        }
     }
 }

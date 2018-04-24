@@ -1,9 +1,11 @@
 package com.service.bookstore.controllers;
 
-import com.service.bookstore.exceptions.ManageErrorException;
+import com.service.bookstore.exceptions.CreateException;
+import com.service.bookstore.exceptions.ServerInternalErrorException;
 import com.service.bookstore.models.User;
 import com.service.bookstore.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +24,10 @@ public class UserController {
     public User createUser(@RequestBody User user) {
         try {
             return userService.create(user);
-        } catch (RuntimeException ex) {
-            throw new ManageErrorException("user");
+        } catch (TransactionSystemException txEx) {
+            throw new CreateException("user");
+        } catch (Exception ex) {
+            throw new ServerInternalErrorException();
         }
     }
 }
