@@ -7,6 +7,7 @@ import com.service.bookstore.payloads.UserOrderResponse;
 import com.service.bookstore.reposistories.OrderReposistory;
 import com.service.bookstore.reposistories.UserReposistory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,5 +36,10 @@ public class UserOrderService {
         userOrderResponse.setBooksFrom(userOrders);
 
         return userOrderResponse;
+    }
+
+    public void deleteUserAndOrders(User user) {
+        orderReposistory.deleteByUser(user);
+        userReposistory.delete(user);
     }
 }

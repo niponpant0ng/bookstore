@@ -99,6 +99,47 @@ public class UserOrderServiceTest {
         assertThat(userOrderResponse.getBooks().get(1), is(2L));
     }
 
+    @Test
+    public void testDeleteUserAndOrderWhenUserIsEmpty() {
+        User user = new User();
+        user.setId(UUID.randomUUID());
+
+        userOrderService.deleteUserAndOrders(user);
+
+        assertThat(userReposistory.findAll(), hasSize(0));
+        assertThat(orderReposistory.findAll(), hasSize(0));
+    }
+
+    @Test
+    public void testDeleteUserAndOrderWhenOrderIsEmpty() {
+        UUID userId = UUID.randomUUID();
+        LocalDate birthDate = LocalDate.now();
+
+        User createdUser = createUser(userId, birthDate);
+
+        userOrderService.deleteUserAndOrders(createdUser);
+
+        assertThat(userReposistory.findAll(), hasSize(0));
+        assertThat(orderReposistory.findAll(), hasSize(0));
+    }
+
+    @Test
+    public void testDeleteUserAndOrderWhenUserAndOrderAreNotEmpty() {
+        UUID userId = UUID.randomUUID();
+        LocalDate birthDate = LocalDate.now();
+
+        User createdUser = createUser(userId, birthDate);
+        Book book1 = createBook(1L);
+        Book book2 = createBook(2L);
+        createOrder(createdUser, book1);
+        createOrder(createdUser, book2);
+
+        userOrderService.deleteUserAndOrders(createdUser);
+
+        assertThat(userReposistory.findAll(), hasSize(0));
+        assertThat(orderReposistory.findAll(), hasSize(0));
+    }
+
     private User createUser(UUID userId, LocalDate birthDate) {
         User user = new User();
         user.setId(userId);
