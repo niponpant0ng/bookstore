@@ -1,5 +1,7 @@
 package com.service.bookstore.config;
 
+import com.service.bookstore.config.security.JwtAuthenticationEntryPoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -30,6 +35,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .disable()
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+            .exceptionHandling()
+                .authenticationEntryPoint(unauthorizedHandler)
                 .and()
             .authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users", "/login")
