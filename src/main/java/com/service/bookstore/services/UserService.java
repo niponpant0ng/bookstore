@@ -4,7 +4,9 @@ import com.service.bookstore.exceptions.CredentialException;
 import com.service.bookstore.models.User;
 import com.service.bookstore.reposistories.UserReposistory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Created by nipon on 4/23/18.
@@ -13,20 +15,25 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private UserReposistory userReposistory;
     private JwtService jwtService;
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserReposistory userReposistory, JwtService jwtService) {
+    public UserService(UserReposistory userReposistory, JwtService jwtService, PasswordEncoder passwordEncoder) {
         this.userReposistory = userReposistory;
         this.jwtService = jwtService;
+        this.passwordEncoder = passwordEncoder;
     }
 
+    @Transactional
     public User create(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userReposistory.save(user);
     }
 
     public String login(User loginUser) {
-        User user = userReposistory.findByUsernameAndPassword(loginUser.getUsername(), loginUser.getPassword());
-        if(user == null) {
+        User user = userReposistory.findByUsername(loginUser.getUsername());
+
+        if(user == null || !passwordEncoder.matches(loginUser.getPassword(), user.getPassword()) ) {
             throw new CredentialException();
         } else {
             return jwtService.createToken(user);
