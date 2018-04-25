@@ -15,6 +15,8 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
+    private Long bookId;
+
     private String name;
 
     private String author;
@@ -29,6 +31,14 @@ public class Book {
 
     public void setId(UUID id) {
         this.id = id;
+    }
+
+    public Long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
     }
 
     public String getName() {

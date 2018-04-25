@@ -18,10 +18,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @NotNull
     private String username;
 
-    @NotNull
     private String password;
 
     private String name;
