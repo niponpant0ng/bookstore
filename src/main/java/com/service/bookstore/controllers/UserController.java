@@ -1,6 +1,6 @@
 package com.service.bookstore.controllers;
 
-import com.service.bookstore.exceptions.CreateException;
+import com.service.bookstore.exceptions.BadRequestException;
 import com.service.bookstore.exceptions.ServerInternalErrorException;
 import com.service.bookstore.models.User;
 import com.service.bookstore.payloads.UserOrderResponse;
@@ -27,7 +27,7 @@ public class UserController {
         try {
             return userService.create(user);
         } catch (TransactionSystemException txEx) {
-            throw new CreateException("user");
+            throw new BadRequestException("Can't create user");
         } catch (Exception ex) {
             throw new ServerInternalErrorException();
         }
@@ -36,5 +36,16 @@ public class UserController {
     @GetMapping
     public UserOrderResponse getUserOrder() {
         return userOrderService.getUserAndOrders(new User());
+    }
+
+    @DeleteMapping
+    public void deleteUserOrder() {
+        try {
+            userOrderService.deleteUserAndOrders(new User());
+        } catch (TransactionSystemException txEx) {
+            throw new BadRequestException("Can't delete user");
+        } catch (Exception ex) {
+            throw new ServerInternalErrorException();
+        }
     }
 }
