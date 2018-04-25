@@ -3,13 +3,12 @@ package com.service.bookstore.controllers;
 import com.service.bookstore.exceptions.CreateException;
 import com.service.bookstore.exceptions.ServerInternalErrorException;
 import com.service.bookstore.models.User;
+import com.service.bookstore.payloads.UserOrderResponse;
+import com.service.bookstore.services.UserOrderService;
 import com.service.bookstore.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionSystemException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * Created by nipon on 4/23/18.
@@ -20,6 +19,9 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserOrderService userOrderService;
+
     @PostMapping
     public User createUser(@RequestBody User user) {
         try {
@@ -29,5 +31,10 @@ public class UserController {
         } catch (Exception ex) {
             throw new ServerInternalErrorException();
         }
+    }
+
+    @GetMapping
+    public UserOrderResponse getUserOrder() {
+        return userOrderService.getUserAndOrders(new User());
     }
 }
