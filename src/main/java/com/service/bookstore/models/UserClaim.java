@@ -22,24 +22,14 @@ public class UserClaim {
         iss = "book store";
     }
 
-    public Map<String, Object> createClaim(User user) {
+    public Map<String, Object> createClaim(UUID userId) {
         Map<String, Object> claims = new HashMap<>();
 
         claims.put("jti", jti);
         claims.put("iss", iss);
-        claims.put("sub", createSubject(user));
+        claims.put("sub", userId);
         claims.put("exp", exp);
 
         return claims;
-    }
-
-    private User createSubject(User user) {
-        User claimUser = new User();
-        BeanUtils.copyProperties(user, claimUser);
-
-        claimUser.setId(null);
-        claimUser.setPassword("");
-
-        return claimUser;
     }
 }

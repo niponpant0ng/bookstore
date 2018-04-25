@@ -8,6 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 /**
  * Created by nipon on 4/23/18.
  */
@@ -38,5 +40,9 @@ public class UserService {
         } else {
             return jwtService.createToken(user);
         }
+    }
+
+    public User getUserById(UUID userId) {
+        return userReposistory.findById(userId).orElseThrow(CredentialException::new);
     }
 }

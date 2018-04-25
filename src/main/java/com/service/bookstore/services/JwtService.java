@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.spec.SecretKeySpec;
 import javax.xml.bind.DatatypeConverter;
 import java.security.Key;
+import java.util.UUID;
 
 /**
  * Created by nipon on 4/24/18.
@@ -32,8 +33,18 @@ public class JwtService {
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
         return Jwts.builder()
-                .setClaims(claim.createClaim(user))
+                .setClaims(claim.createClaim(user.getId()))
                 .signWith(signatureAlgorithm, signingKey)
                 .compact();
+    }
+
+
+    public UUID getUserIdFromToken(String jwt) {
+        Claims claim = Jwts.parser()
+                .setSigningKey(DatatypeConverter.parseBase64Binary(jwtSecret))
+                .parseClaimsJws(jwt)
+                .getBody();
+
+        return UUID.fromString(claim.getSubject());
     }
 }
