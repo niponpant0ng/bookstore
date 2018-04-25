@@ -5,6 +5,7 @@ import com.service.bookstore.models.Book;
 import com.service.bookstore.models.Order;
 import com.service.bookstore.models.User;
 import com.service.bookstore.payloads.UserOrderResponse;
+import com.service.bookstore.reposistories.BookRepository;
 import com.service.bookstore.reposistories.OrderReposistory;
 import com.service.bookstore.reposistories.UserReposistory;
 import org.junit.After;
@@ -16,8 +17,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -40,17 +44,20 @@ public class UserOrderServiceTest {
     @Autowired
     private OrderReposistory orderReposistory;
 
+    @Autowired
+    private BookRepository bookRepository;
+
     private UserOrderService userOrderService;
 
     @Before
     public void before() {
-        userOrderService = new UserOrderService(userReposistory, orderReposistory);
+        userOrderService = new UserOrderService(userReposistory, orderReposistory, bookRepository);
     }
 
     @After
     public void after() {
-        userReposistory.deleteAll();
         orderReposistory.deleteAll();
+        userReposistory.deleteAll();
     }
 
     @Test(expected = BadRequestException.class)
@@ -140,6 +147,39 @@ public class UserOrderServiceTest {
         assertThat(orderReposistory.findAll(), hasSize(0));
     }
 
+    @Test(expected = BadRequestException.class)
+    public void testOrderUserBookWhenBookIdsAreEmpty() {
+        User user = new User();
+        user.setId(UUID.randomUUID());
+
+        userOrderService.orderUserBook(user, new ArrayList<>());
+    }
+
+    @Test(expected = BadRequestException.class)
+    public void testOrderUserBookWhenSomeBookIdsIsNotFound() {
+        UUID userId = UUID.randomUUID();
+        LocalDate birthDate = LocalDate.now();
+
+        User createdUser = createUser(userId, birthDate);
+        createBook(1L);
+
+        userOrderService.orderUserBook(createdUser, Arrays.asList(1L, 2L));
+    }
+
+    @Test
+    public void testOrderUserBookWhenUserAndBookIdsAreNotEmpty() {
+        UUID userId = UUID.randomUUID();
+        LocalDate birthDate = LocalDate.now();
+
+        User createdUser = createUser(userId, birthDate);
+        createBook(1L, 150d);
+        createBook(2L, 55.5d);
+
+        Double price = userOrderService.orderUserBook(createdUser, Arrays.asList(1L, 2L));
+
+        assertThat(price, is(205.5d));
+    }
+
     private User createUser(UUID userId, LocalDate birthDate) {
         User user = new User();
         user.setId(userId);
@@ -150,11 +190,16 @@ public class UserOrderServiceTest {
         return userReposistory.save(user);
     }
 
-    private Book createBook(Long bookId) {
+    private Book createBook(Long bookId, Double price) {
         Book book = new Book();
         book.setBookId(bookId);
+        book.setPrice(price);
 
         return testEntityManager.persist(book);
+    }
+
+    private Book createBook(Long bookId) {
+        return createBook(bookId, 0d);
     }
 
     private Order createOrder(User user, Book book1) {

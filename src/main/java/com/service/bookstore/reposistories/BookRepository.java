@@ -9,4 +9,5 @@ import java.util.UUID;
  * Created by nipon on 4/23/18.
  */
 public interface BookRepository extends JpaRepository<Book, UUID> {
+    Book findByBookId(Long bookId);
 }
