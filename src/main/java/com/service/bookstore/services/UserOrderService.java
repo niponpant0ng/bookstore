@@ -32,12 +32,10 @@ public class UserOrderService {
     }
 
     public UserOrderResponse getUserAndOrders(User user) {
-        User userDetail = userReposistory.findById(user.getId())
-                .orElseThrow(() -> new BadRequestException("Wrong user ID"));
         List<Order> userOrders = orderReposistory.findByUser(user);
 
         UserOrderResponse userOrderResponse = new UserOrderResponse();
-        userOrderResponse.setUserDetail(userDetail);
+        userOrderResponse.setUserDetail(user);
         userOrderResponse.setBooksFrom(userOrders);
 
         return userOrderResponse;

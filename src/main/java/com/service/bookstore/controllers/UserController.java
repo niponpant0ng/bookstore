@@ -3,10 +3,12 @@ package com.service.bookstore.controllers;
 import com.service.bookstore.exceptions.BadRequestException;
 import com.service.bookstore.exceptions.ServerInternalErrorException;
 import com.service.bookstore.models.User;
+import com.service.bookstore.models.UserPrincipal;
 import com.service.bookstore.payloads.UserOrderResponse;
 import com.service.bookstore.services.UserOrderService;
 import com.service.bookstore.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,9 +38,9 @@ public class UserController {
     }
 
     @GetMapping
-    public UserOrderResponse getUserOrder() {
+    public UserOrderResponse getUserOrder(Authentication authentication) {
         try {
-            return userOrderService.getUserAndOrders(new User());
+            return userOrderService.getUserAndOrders(getUserFrom(authentication));
         } catch (BadRequestException badEx) {
             throw badEx;
         } catch (Exception ex) {
@@ -47,9 +49,9 @@ public class UserController {
     }
 
     @DeleteMapping
-    public void deleteUserOrder() {
+    public void deleteUserOrder(Authentication authentication) {
         try {
-            userOrderService.deleteUserAndOrders(new User());
+            userOrderService.deleteUserAndOrders(getUserFrom(authentication));
         } catch (TransactionSystemException txEx) {
             throw new BadRequestException("Can't delete user");
         } catch (Exception ex) {
@@ -58,13 +60,18 @@ public class UserController {
     }
 
     @PostMapping("/orders")
-    public Double orderUser(@RequestBody List<Long> bookIds) {
+    public Double orderUser(Authentication authentication, @RequestBody List<Long> bookIds) {
         try {
-            return userOrderService.orderUserBook(new User(), bookIds);
+            return userOrderService.orderUserBook(getUserFrom(authentication), bookIds);
         } catch (BadRequestException badEx) {
             throw badEx;
         } catch (Exception ex) {
             throw new ServerInternalErrorException();
         }
+    }
+
+    private User getUserFrom(Authentication authentication) {
+        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
+        return userPrincipal.toUser();
     }
 }

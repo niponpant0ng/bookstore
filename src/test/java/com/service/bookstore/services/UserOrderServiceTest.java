@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -58,14 +57,6 @@ public class UserOrderServiceTest {
     public void after() {
         orderReposistory.deleteAll();
         userReposistory.deleteAll();
-    }
-
-    @Test(expected = BadRequestException.class)
-    public void testGetUserAndOrdersWhenUserIsEmpty() {
-        User user = new User();
-        user.setId(UUID.randomUUID());
-
-        userOrderService.getUserAndOrders(user);
     }
 
     @Test
