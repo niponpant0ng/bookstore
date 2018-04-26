@@ -3,6 +3,7 @@ package com.service.bookstore.services;
 import com.service.bookstore.exceptions.ServerInternalErrorException;
 import com.service.bookstore.models.Book;
 import com.service.bookstore.payloads.BookExternalResponse;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -70,10 +71,8 @@ public class BookExternalService {
     private Book mapToBook(BookExternalResponse bookExternalResponse, boolean isRecommend) {
         Book book = new Book();
 
+        BeanUtils.copyProperties(bookExternalResponse, book);
         book.setBookId(bookExternalResponse.getId());
-        book.setName(bookExternalResponse.getBookName());
-        book.setAuthor(bookExternalResponse.getAuthorName());
-        book.setPrice(bookExternalResponse.getPrice());
         book.setRecommend(isRecommend);
 
         return book;

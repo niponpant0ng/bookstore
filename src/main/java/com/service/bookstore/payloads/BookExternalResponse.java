@@ -1,9 +1,11 @@
 package com.service.bookstore.payloads;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
+
 public class BookExternalResponse {
     private Long id;
-    private String authorName;
-    private String bookName;
+    private String name;
+    private String author;
     private Double price;
 
     public Long getId() {
@@ -14,20 +16,23 @@ public class BookExternalResponse {
         this.id = id;
     }
 
-    public String getAuthorName() {
-        return authorName;
+
+    public String getName() {
+        return name;
     }
 
-    public void setAuthorName(String authorName) {
-        this.authorName = authorName;
+    @JsonSetter("book_name")
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getBookName() {
-        return bookName;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setBookName(String bookName) {
-        this.bookName = bookName;
+    @JsonSetter("author_name")
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public Double getPrice() {

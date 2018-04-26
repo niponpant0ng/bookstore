@@ -124,8 +124,8 @@ public class BookExternalServiceTest {
 
         book.setId(id);
         book.setPrice(price);
-        book.setBookName("book" + id);
-        book.setAuthorName("author" + id);
+        book.setName("book" + id);
+        book.setAuthor("author" + id);
 
         return book;
     }
