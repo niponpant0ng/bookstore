@@ -3,21 +3,22 @@ package com.service.bookstore.services;
 import com.service.bookstore.exceptions.ServerInternalErrorException;
 import com.service.bookstore.models.Book;
 import com.service.bookstore.payloads.BookExternalResponse;
-import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
+@Service
 public class BookExternalService {
     private RestTemplate restTemplate;
 
+    @Autowired
     public BookExternalService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
