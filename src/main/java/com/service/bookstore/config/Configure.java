@@ -1,7 +1,5 @@
 package com.service.bookstore.config;
 
-import com.service.bookstore.services.BookExternalService;
-import com.service.bookstore.services.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -20,16 +18,11 @@ public class Configure {
     @Component
     public class Initializer implements CommandLineRunner {
         @Autowired
-        private BookService bookService;
-
-        @Autowired
-        private BookExternalService bookExternalService;
+        private ScheduledTasks scheduledTasks;
 
         @Override
         public void run(String... strings) {
-            if(bookService.areBooksEmpty()) {
-                bookService.createBooks(bookExternalService.findBooks());
-            }
+            scheduledTasks.refreshBooks();
         }
     }
 }
