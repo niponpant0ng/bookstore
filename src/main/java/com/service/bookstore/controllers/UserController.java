@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 /**
  * Created by nipon on 4/23/18.
  */
@@ -35,7 +37,13 @@ public class UserController {
 
     @GetMapping
     public UserOrderResponse getUserOrder() {
-        return userOrderService.getUserAndOrders(new User());
+        try {
+            return userOrderService.getUserAndOrders(new User());
+        } catch (BadRequestException badEx) {
+            throw badEx;
+        } catch (Exception ex) {
+            throw new ServerInternalErrorException();
+        }
     }
 
     @DeleteMapping
@@ -44,6 +52,17 @@ public class UserController {
             userOrderService.deleteUserAndOrders(new User());
         } catch (TransactionSystemException txEx) {
             throw new BadRequestException("Can't delete user");
+        } catch (Exception ex) {
+            throw new ServerInternalErrorException();
+        }
+    }
+
+    @PostMapping("/orders")
+    public Double orderUser(@RequestBody List<Long> bookIds) {
+        try {
+            return userOrderService.orderUserBook(new User(), bookIds);
+        } catch (BadRequestException badEx) {
+            throw badEx;
         } catch (Exception ex) {
             throw new ServerInternalErrorException();
         }
