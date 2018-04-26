@@ -15,4 +15,7 @@ public interface BookRepository extends JpaRepository<Book, UUID> {
 
     @Query("SELECT b FROM Book b ORDER BY b.isRecommend DESC")
     List<Book> findAllBooks();
+
+    @Query("SELECT COUNT(b.id) FROM Book b")
+    Integer countBook();
 }

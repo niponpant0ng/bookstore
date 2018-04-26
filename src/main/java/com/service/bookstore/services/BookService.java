@@ -25,4 +25,8 @@ public class BookService {
     public List<Book> findAllBooks() {
         return bookRepository.findAllBooks();
     }
+
+    public boolean areBooksEmpty() {
+        return bookRepository.countBook() == 0;
+    }
 }
